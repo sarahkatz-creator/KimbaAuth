@@ -1,3 +1,3 @@
 flask
-terra-python
+terra-python==0.0.17
 gunicorn
