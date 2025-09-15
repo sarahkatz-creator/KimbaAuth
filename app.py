@@ -53,7 +53,7 @@ def authenticate():
         </div>
 
         <div>
-            <h3>Oura</h3>
+            <h3>Whoop</h3>
             <button onclick="window.location.href='/start-auth/WHOOP'">Authenticate with WHOOP</button>
         </div>
     </body>
