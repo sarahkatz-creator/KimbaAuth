@@ -51,6 +51,11 @@ def authenticate():
             <h3>Oura</h3>
             <button onclick="window.location.href='/start-auth/OURA'">Authenticate with OURA</button>
         </div>
+
+        <div>
+            <h3>Oura</h3>
+            <button onclick="window.location.href='/start-auth/WHOOP'">Authenticate with WHOOP</button>
+        </div>
     </body>
     </html>
     """
@@ -61,7 +66,7 @@ def authenticate():
 def start_auth(provider: str):
     """
     Creates a Terra widget session for the requested provider and redirects.
-    Supported examples: GARMIN, OURA
+    Supported examples: GARMIN, OURA, WHOOP
     """
     provider = provider.upper().strip()
     # Optional: make the reference id unique per attempt
