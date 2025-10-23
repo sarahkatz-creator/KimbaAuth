@@ -40,27 +40,31 @@ def authenticate():
     <html>
     <head><title>Authenticate</title></head>
     <body>
-        <h2>Connect a Provider</h2>
+        <h2>Connect a Provider</h2> 
+        <form id="userForm">
+            <label>First Name: </label>
+            <input type="text" id="firstName" name="firstName" required><br><br>
 
-        <div style="margin-bottom: 12px;">
-            <h3>Garmin</h3>
-            <button onclick="window.location.href='/start-auth/GARMIN'">Authenticate with GARMIN</button>
-        </div>
+            <label>Last Initial: </label>
+            <input type="text" id="lastInitial" name="lastInitial" maxlength="1" required><br><br>
 
-        <div>
-            <h3>Oura</h3>
-            <button onclick="window.location.href='/start-auth/OURA'">Authenticate with OURA</button>
-        </div>
-
-        <div>
-            <h3>Whoop</h3>
-            <button onclick="window.location.href='/start-auth/WHOOP'">Authenticate with WHOOP</button>
-        </div>
-
-        <div>
-            <h3>Apple Health</h3>
-            <button onclick="window.location.href='/start-auth/APPLE'">Authenticate with Apple Health</button>
-        </div>
+            <h3>Select Provider:</h3>
+            <button type="button" onclick="startAuth('GARMIN')">Garmin</button>
+            <button type="button" onclick="startAuth('OURA')">Oura</button>
+            <button type="button" onclick="startAuth('WHOOP')">Whoop</button>
+            <button type="button" onclick="startAuth('APPLE')">Apple Health</button>
+        </form>
+        <script>
+        function startAuth(provider) {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastInitial = document.getElementById('lastInitial').value.trim();
+            if (!firstName || !lastInitial) {
+                alert("Please enter your first name and last initial.");
+                return;
+            }
+            window.location.href = `/start-auth/${provider}?firstName=${encodeURIComponent(firstName)}&lastInitial=${encodeURIComponent(lastInitial)}`;
+        }
+        </script>
     </body>
     </html>
     """
@@ -74,9 +78,14 @@ def start_auth(provider: str):
     Supported examples: GARMIN, OURA, WHOOP, Apple Health
     """
     provider = provider.upper().strip()
-    # Optional: make the reference id unique per attempt
-    reference_id = f"ref-{provider}-{int(time.time())}"
+    first_name = request.args.get("firstName", "").lower().strip()
+    last_initial = request.args.get("lastInitial", "").lower().strip()
 
+    if not first_name or not last_initial:
+        return jsonify({"error": "Missing first name or last initial"}), 400
+
+    reference_id = f"{first_name}-{last_initial}-{provider}"
+    
     try:
         widget_response = terra.generate_widget_session(
             providers=[provider],
